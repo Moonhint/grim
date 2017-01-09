@@ -1,0 +1,33 @@
+{
+  "name": "grim",
+  "description": "Tax information storage application",
+  "main": "main.js",
+  "authors": [
+    "Antoni <email.to.antoni@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-material": "^1.0.9",
+    "angular-material-datetimepicker": "^1.4.0",
+    "angular-input-masks": "^2.4.0",
+    "angular-ui-notification": "^0.2.0",
+    "angularUtils-pagination": "angular-utils-pagination#^0.11.1",
+    "bootstrap-css-only": "^3.3.6",
+    "angularjs-datepicker": "^2.1.6",
+    "moment": "^2.14.1",
+    "lodash": "^4.15.0",
+    "angular-material-data-table": "^0.10.9",
+    "angular-material-icons": "^0.7.1",
+    "svg-morpheus": "^0.3.2"
+  }
+}

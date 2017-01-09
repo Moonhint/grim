@@ -1,0 +1,35 @@
+<md-dialog aria-label="Compensate Date" ng-cloak>
+  <form name="compensate_form">
+    <md-dialog-content class="edit-giro">
+      <br>
+      <br>
+      <br>
+      <md-input-container>
+        <label>Pilih Bulan Kompensasi</label>
+        <md-select ng-model="cdc.filter_by_month">
+          <md-option ng-repeat="month in cdc.month_filters" value="{{month.value}}">
+            {{month.display}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-input-container>
+        <label>Pilih Tahun Kompensasi</label>
+        <md-select ng-model="cdc.filter_by_year">
+          <md-option ng-repeat="year in cdc.year_filters" value="{{year.value}}">
+            {{year.display}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button type="submit"
+        ng-click="cdc.cancel()">
+        Batal
+      </md-button>
+      <md-button type="submit"
+        ng-click="cdc.save()">
+        Kompensasi
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

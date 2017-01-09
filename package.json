@@ -1,0 +1,36 @@
+{
+  "name": "grim",
+  "version": "1.0.0",
+  "description": "Tax information storage application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --debug",
+    "build": "electron-packager . --platform=all --arch=all --prune --out=out --overwrite",
+    "pack-win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --prune"
+  },
+  "author": "Antoni <email.to.antoni@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-connect": "^0.4.2",
+    "electron-packager": "7.4.0",
+    "electron-prebuilt": "^1.2.6",
+    "electron-windows-store": "^0.3.0",
+    "electron-winstaller": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-useref": "^3.1.0"
+  },
+  "dependencies": {
+    "angular-bootstrap-datetimepicker": "^1.0.1",
+    "bluebird": "^3.4.1",
+    "electron-json-storage": "^2.0.0",
+    "electron-shortcut-normalizer": "^1.0.0",
+    "glob": "^6.0.4",
+    "highlight.js": "^9.3.0",
+    "lodash": "^4.14.1",
+    "moment": "^2.14.1",
+    "mongoose": "^4.5.8",
+    "mongoose-hook-custom-id": "^0.1.4",
+    "mongoose-paginate": "^5.0.0"
+  }
+}

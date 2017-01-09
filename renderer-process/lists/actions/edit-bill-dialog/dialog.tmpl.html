@@ -1,0 +1,147 @@
+<md-dialog aria-label="Edit Bill" ng-cloak>
+  <form name="edit_bill_form">
+    <md-dialog-content class="edit-bill">
+      <div>
+          <div layout="column" layout-align="start start">
+            <div layout="row" layout-align="space-between stretch" style="width:100%;">
+              <md-input-container flex="60">
+                <label>No. Seri Faktur Pajak</label>
+                <input required name="tax_invoice_number"
+                       ng-disabled="ebdc.current_user.role===2"
+                       ng-model="ebdc.bill.tax_invoice_number">
+                <div ng-messages="edit_bill_form.tax_invoice_number.$error">
+                  <div ng-message="required">Wajib diisi.</div>
+                </div>
+              </md-input-container>
+              <md-datepicker ng-disabled="ebdc.current_user.role===2" flex="40" required name="invoice_date"
+                ng-model="ebdc.bill.invoice_date"
+                md-placeholder="Tanggal Invoice & Faktur">
+                <div ng-messages="edit_bill_form.invoice_date.$error">
+                  <div ng-message="required">Wajib diisi.</div>
+                </div>
+              </md-datepicker>
+            </div>
+            <div layout="row" layout-align="space-between stretch" style="width:100%;">
+              <div layout="column" flex="30">
+                <md-input-container>
+                  <label>Nama Supplier</label>
+                  <input required name="supplier_name"
+                         ng-disabled="ebdc.current_user.role===2"
+                         ng-model="ebdc.bill.supplier_name">
+                  <div ng-messages="edit_bill_form.supplier_name.$error">
+                    <div ng-message="required">Wajib diisi.</div>
+                  </div>
+                </md-input-container>
+                <md-input-container>
+                  <label>NPWP Supplier</label>
+                  <input required name="supplier_npwp"
+                         ng-disabled="ebdc.current_user.role===2"
+                         ng-model="ebdc.bill.supplier_npwp">
+                  <div ng-messages="edit_bill_form.supplier_npwp.$error">
+                    <div ng-message="required">Wajib diisi.</div>
+                  </div>
+                </md-input-container>
+              </div>
+              <div layout="column" flex="40">
+                <div layout="row" style="width:100%;">
+                  <md-input-container flex="90">
+                    <label>DPP</label>
+                    <input required name="dpp" ng-model="ebdc.bill.dpp" ui-number-mask="0" ng-disabled="ebdc.current_user.role===2"
+                           ng-change="ebdc.count_ppn(); ebdc.count_pph23(); ebdc.count_total();">
+                    <div ng-messages="edit_bill_form.dpp.$error">
+                      <div ng-message="required">Wajib diisi.</div>
+                    </div>
+                  </md-input-container>
+                  <md-input-container flex="35">
+                    <label>PPN</label>
+                    <md-select ng-model="ebdc.bill.ppn_percentage"
+                               ng-disabled="ebdc.current_user.role===2"
+                               ng-change="ebdc.count_ppn(); ebdc.count_total();">
+                      <md-option ng-repeat="ppn_percentage in ebdc.ppn_percentage" value="{{ppn_percentage}}">
+                        {{ppn_percentage}} %
+                      </md-option>
+                    </md-select>
+                  </md-input-container>
+                </div>
+                <div layout="row">
+                  <md-checkbox ng-disabled="ebdc.current_user.role===2" md-no-ink ng-model="ebdc.bill.is_service" ng-change="ebdc.count_pph23(); ebdc.count_total();" aria-label="is_pph23 check box">
+                    Servis / Jasa
+                  </md-checkbox>
+                  <md-input-container ng-if="ebdc.bill.is_service">
+                    <label>Nominal Jasa</label>
+                    <input required name="pph_amount"
+                           ng-disabled="ebdc.current_user.role===2"
+                           ng-model="ebdc.bill.pph_amount" ui-number-mask="0"
+                           ng-change="ebdc.count_pph23(); ebdc.count_total();">
+                    <div ng-messages="edit_bill_form.pph_amount.$error">
+                      <div ng-message="required">Wajib diisi.</div>
+                    </div>
+                  </md-input-container>
+                </div>
+              </div>
+              <div layout="column" flex="30">
+                <!-- <md-input-container ng-if="!ebdc.bill.is_service"> -->
+                <md-input-container>
+                  <label>Meterai</label>
+                  <md-select ng-model="ebdc.bill.stamp" ng-disabled="ebdc.current_user.role===2" ng-change="ebdc.count_total()">
+                    <md-option ng-repeat="stamp in ebdc.stamp" value="{{stamp.value}}">
+                      {{stamp.name}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+                <div layout="column" layout-align="center end" style="width:100%; margin-top:80px;">
+                  <span ng-if="ebdc.bill.dpp!==0">DPP: {{ebdc.bill.dpp | currency : 'Rp. ' : 0}}</span>
+                  <span ng-if="ebdc.bill.ppn_percentage!==0">PPN: {{ebdc.bill.ppn | currency : 'Rp. ' : 0}}</span>
+                  <span ng-if="ebdc.bill.is_service">PPH23: ({{ebdc.bill.pph23 | currency : 'Rp. ' : 0}})</span>
+                  <span ng-if="ebdc.bill.stamp!==0">Materai: {{ebdc.bill.stamp | currency : 'Rp. ' : 0}}</span>
+                  <span>-----------</span>
+                  <span>Total: {{ebdc.bill.dpp_ppn_stamp_pph23 | currency : 'Rp. ' : 0}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <md-input-container class="string-input-overwrite">
+            <label>No. Giro</label>
+            <input ng-model="ebdc.bill.giro_number">
+          </md-input-container>
+          <md-datepicker flex="50"
+              ng-model="ebdc.bill.giro_due_date"
+              md-placeholder="Jatuh Tempo">
+          </md-datepicker>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-input-container>
+        <label>Pilih Metode</label>
+        <md-select ng-model="ebdc.print_method" ng-change="ebdc.change_print_method()">
+          <md-option ng-repeat="method in ebdc.print_methods"
+                     value="{{method.value}}">
+            {{method.display}}
+          </md-option>
+        </md-select>
+      </md-input-container>
+      <md-button type="submit"
+        ng-disabled="edit_bill_form.supplier_name.$error.required ||
+                     edit_bill_form.tax_invoice_number.$error.required ||
+                     edit_bill_form.supplier_npwp.$error.required ||
+                     edit_bill_form.ddp.$error.required ||
+                     edit_bill_form.invoice_date.$error.required"
+        ng-click="ebdc.print_and_save()">
+        Cetak dan Simpan
+      </md-button>
+      <md-button type="submit"
+        ng-disabled="edit_bill_form.supplier_name.$error.required ||
+                     edit_bill_form.tax_invoice_number.$error.required ||
+                     edit_bill_form.supplier_npwp.$error.required ||
+                     edit_bill_form.ddp.$error.required ||
+                     edit_bill_form.invoice_date.$error.required"
+        ng-click="ebdc.save()">
+        Simpan
+      </md-button>
+      <md-button type="submit"
+        ng-click="ebdc.cancel()">
+        Batal
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

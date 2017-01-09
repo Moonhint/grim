@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Grim</title>
+
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/nativize.css">
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/about.css">
+    <link rel="stylesheet" href="assets/css/login.css">
+    <link rel="stylesheet" href="assets/css/nav.css">
+    <link rel="stylesheet" href="assets/css/section.css">
+    <link rel="stylesheet" href="assets/css/demo.css">
+    <link rel="stylesheet" href="assets/css/github.css">
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="bower_components/angular-material-datetimepicker/css/material-datetimepicker.css">
+    <link rel="stylesheet" href="bower_components/angular-ui-notification/dist/angular-ui-notification.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-css-only/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/angular-material-data-table/dist/md-data-table.min.css" type="text/css"/>
+    <link rel="stylesheet" href="bower_components/angular-material-icons/angular-material-icons.css" />
+    <link rel="stylesheet" href="assets/css/md-overwrite.css">
+    <link rel="stylesheet" href="assets/css/print.css">
+    <link rel="import" href="sections/about.html">
+    <link rel="import" href="sections/login.html">
+    <link rel="import" href="sections/home/home.html">
+    <link rel="import" href="sections/lists/before-payment-lists.html">
+    <link rel="import" href="sections/lists/after-payment-lists.html">
+    <link rel="import" href="sections/report/report.html">
+    <link rel="import" href="sections/history/receipt.html">
+
+
+  </head>
+  <body ng-app="grimapp">
+
+      <nav class="nav js-nav">
+        <header class="nav-header">
+          <button type="button" id="button-login" data-section="login">
+            <h1 class="nav-title" data-section="login"><strong data-section="login">Halimmas</strong> Mandiri</h1>
+            <!-- <svg class="nav-header-icon" data-section="login"><use xlink:href="assets/img/icons.svg#icon-electron"></use></svg> -->
+          </button>
+        </header>
+
+        <div class="nav-item u-category-home">
+          <h5 class="nav-category">
+            <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+            Home
+          </h5>
+          <button type="button" id="button-home" data-section="home" class="nav-button">Buat <em>tanda terima</em></button>
+        </div>
+
+        <div class="nav-item u-category-lists">
+          <h5 class="nav-category">
+            <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-menu"></use></svg>
+            Lists Faktur Pajak
+          </h5>
+          <button type="button" id="button-before-payment-lists" data-section="before-payment-lists" class="nav-button"><em>Belum</em> dikompensasi</button>
+          <button type="button" id="button-after-payment-lists" data-section="after-payment-lists" class="nav-button"><em>Sudah</em> dikompensasi</button>
+        </div>
+
+        <div class="nav-item u-category-report">
+          <h5 class="nav-category">
+            <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-communication"></use></svg>
+            Report</h5>
+          <button type="button" id="button-report" data-section="report" class="nav-button"><em>Pembayaran</em> tagihan</button>
+        </div>
+
+        <div class="nav-item u-category-history">
+          <h5 class="nav-category">
+            <svg class="nav-icon"><use xlink:href="assets/img/icons.svg#icon-media"></use></svg>
+            Lihat lagi</h5>
+          <button type="button" id="button-receipt" data-section="receipt" class="nav-button"><em>Tanda terima</em> tagihan</button>
+        </div>
+        <footer class="nav-footer">
+          <button type="button" id="button-about" data-modal="about" class="nav-footer-button">About Halimmas Mandiri</button>
+        </footer>
+      </nav>
+
+      <main class="content js-content"></main>
+
+  </body>
+
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-aria/angular-aria.js"></script>
+  <script src="bower_components/angular-messages/angular-messages.js"></script>
+  <script src="bower_components/angular-material/angular-material.js"></script>
+  <script src="bower_components/moment/moment.js"></script>
+  <script src="bower_components/angular-material-datetimepicker/js/angular-material-datetimepicker.js"></script>
+  <script src="bower_components/angular-input-masks/angular-input-masks-standalone.js"></script>
+  <script src="bower_components/angular-ui-notification/dist/angular-ui-notification.js"></script>
+  <script src="bower_components/angularUtils-pagination/dirPagination.js"></script>
+  <script src="bower_components/lodash/dist/lodash.js"></script>
+  <script src="bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
+  <script src="bower_components/angular-material-icons/angular-material-icons.min.js"></script>
+  <script src="bower_components/svg-morpheus/source/js/svg-morpheus.js"></script>
+  <script src="renderer-process/app.js"></script>
+
+  <script>
+    require('./assets/imports')
+    require('./assets/ex-links')
+    require('./assets/nav')
+    require('./assets/demo-btns')
+    require('./assets/normalize-shortcuts')
+  </script>
+</html>

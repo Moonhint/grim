@@ -1,0 +1,46 @@
+<template class="task-template">
+  <section id="receipt-section" class="section js-section u-category-history">
+    <header class="section-header">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+          Bukti tanda terima tagihan
+        </h1>
+      </div>
+    </header>
+
+    <div class="demo" ng-controller="ReceiptHistoryCtrl as ctrl">
+      <div class="demo-wrapper">
+        <button id="receipt-demo-toggle" class="js-container-target demo-toggle-button">
+          <div class="demo-meta u-avoid-clicks">Kumpulan</div>
+        </button>
+        <div class="demo-box">
+          <p>Semua tanda terima tercetak disimpan di {{ctrl.receipt_storage_address}}</p>
+          <md-button class="md-raised md-primary" ng-click="ctrl.open_file_manager()">
+            Lihat
+          </md-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-wrapper">
+        <button id="receipt-help-demo-toggle" class="js-container-target demo-toggle-button">
+          <div class="demo-meta u-avoid-clicks">Bantuan</div>
+        </button>
+        <div class="demo-box">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod. Click the demo button, change the new window and see the dimensions and position update here, above.</p>
+
+          <p>There are a lot of methods for controlling the state of the window such as the size, location, and focus status as well as events to listen to for window changes. Visit the <a href="http://electron.atom.io/docs/api/browser-window">documentation<span class="u-visible-to-screen-reader">(opens in new window)</span></a> for the full list.</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      require('./renderer-process/history/receipt.ctrl')
+      // require('./renderer-process/windows/manage-window')
+      // require('./renderer-process/windows/frameless-window')
+    </script>
+
+  </section>
+</template>

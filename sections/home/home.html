@@ -1,0 +1,194 @@
+<template class="task-template">
+  <section id="home-section" class="section js-section u-category-home">
+    <header class="section-header non-print">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+          Buat Tanda Terima Tagihan
+        </h1>
+      </div>
+    </header>
+    <header class="section-header print-section">
+      <img src="assets/img/grim-logo.jpeg" alt="" />
+      <div class="letter-head section-wrapper">
+        <h4>
+          Bukti Tanda Terima Tagihan
+        </h4>
+      </div>
+    </header>
+
+    <div class="demo" ng-controller="HomeCtrl as ctrl">
+      <div class="demo-wrapper non-print">
+        <button id="create-bill-demo-toggle" class="js-container-target demo-toggle-button">
+          <div class="demo-meta u-avoid-clicks">Masukkan data tagihan disini</div>
+        </button>
+        <div class="demo-box">
+          <form name="bill_form">
+            <div layout="column" layout-align="start start">
+              <div layout="row" layout-align="space-between stretch" style="width:100%;">
+                <md-input-container flex="60">
+                  <label>No. Seri Faktur Pajak</label>
+                  <input required invoice-number name="tax_invoice_number" ng-model="ctrl.bill.tax_invoice_number">
+                  <div ng-messages="bill_form.tax_invoice_number.$error">
+                    <div ng-message="required">Wajib diisi.</div>
+                  </div>
+                </md-input-container>
+                <md-input-container flex="50">
+                  <label>Tanggal Invoice & Faktur</label>
+                  <input  required name="invoice_date" mdc-datetime-picker date="true" time="false" type="text"
+                          ng-model="ctrl.bill.invoice_date">
+                  <div ng-messages="bill_form.invoice_date.$error">
+                    <div ng-message="required">Wajib diisi.</div>
+                  </div>
+                </md-input-container>
+              </div>
+              <div layout="row" layout-align="space-between stretch" style="width:100%;">
+                <div layout="column" flex="30">
+                  <md-input-container>
+                    <label>Nama Supplier</label>
+                    <input required name="supplier_name" ng-model="ctrl.bill.supplier_name">
+                    <div ng-messages="bill_form.supplier_name.$error">
+                      <div ng-message="required">Wajib diisi.</div>
+                    </div>
+                  </md-input-container>
+                  <md-input-container>
+                    <label>NPWP Supplier</label>
+                    <input required name="supplier_npwp" npwp-number ng-model="ctrl.bill.supplier_npwp">
+                    <div ng-messages="bill_form.supplier_npwp.$error">
+                      <div ng-message="required">Wajib diisi.</div>
+                    </div>
+                  </md-input-container>
+                </div>
+                <div layout="column" flex="40">
+                  <div layout="row" style="width:100%;">
+                    <md-input-container flex="90">
+                      <label>DPP</label>
+                      <input required name="dpp" ng-model="ctrl.bill.dpp" ui-number-mask="0"
+                             ng-change="ctrl.count_ppn(); ctrl.count_pph23(); ctrl.count_total();">
+                      <div ng-messages="bill_form.dpp.$error">
+                        <div ng-message="required">Wajib diisi.</div>
+                      </div>
+                    </md-input-container>
+                    <md-input-container flex="30">
+                      <label>PPN</label>
+                      <md-select ng-model="ctrl.bill.ppn_percentage" ng-change="ctrl.count_ppn(); ctrl.count_total();">
+                        <md-option ng-repeat="ppn_percentage in ctrl.ppn_percentage" value="{{ppn_percentage}}">
+                          {{ppn_percentage}} %
+                        </md-option>
+                      </md-select>
+                    </md-input-container>
+                  </div>
+                  <div layout="row">
+                    <md-checkbox md-no-ink ng-model="ctrl.bill.is_service" ng-change="ctrl.count_pph23(); ctrl.count_total();" aria-label="is_pph23 check box">
+                      Servis / Jasa
+                    </md-checkbox>
+                    <md-input-container ng-if="ctrl.bill.is_service">
+                      <label>Nominal Jasa</label>
+                      <input required name="pph_amount" ng-model="ctrl.bill.pph_amount" ui-number-mask="0"
+                             ng-change="ctrl.count_pph23(); ctrl.count_total();">
+                      <div ng-messages="bill_form.pph_amount.$error">
+                        <div ng-message="required">Wajib diisi.</div>
+                      </div>
+                    </md-input-container>
+                  </div>
+                </div>
+                <div layout="column" flex="30">
+                  <!-- <md-input-container ng-if="!ctrl.bill.is_service"> -->
+                  <md-input-container>
+                    <label>Meterai</label>
+                    <md-select ng-model="ctrl.bill.stamp" ng-change="ctrl.count_total()">
+                      <md-option ng-repeat="stamp in ctrl.stamp" value="{{stamp.value}}">
+                        {{stamp.name}}
+                      </md-option>
+                    </md-select>
+                  </md-input-container>
+                  <div layout="column" layout-align="center end" style="width:100%; margin-top:80px;">
+                    <span ng-if="ctrl.bill.dpp!==0">DPP: {{ctrl.bill.dpp | currency : 'Rp. ' : 0}}</span>
+                    <span ng-if="ctrl.bill.ppn_percentage!==0">PPN: {{ctrl.bill.ppn | currency : 'Rp. ' : 0}}</span>
+                    <span ng-if="ctrl.bill.is_service">PPH23: ({{ctrl.bill.pph23 | currency : 'Rp. ' : 0}})</span>
+                    <span ng-if="ctrl.bill.stamp!==0">Materai: {{ctrl.bill.stamp | currency : 'Rp. ' : 0}}</span>
+                    <span>-----------</span>
+                    <span>Total: {{ctrl.bill.dpp_ppn_stamp_pph23 | currency : 'Rp. ' : 0}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <md-input-container>
+              <label>Jatuh Tempo Giro</label>
+              <input  mdc-datetime-picker date="true" time="false" type="text"
+                      ng-model="ctrl.bill.giro_due_date">
+            </md-input-container>
+            <md-input-container>
+              <label>No. Giro</label>
+              <input ng-model="ctrl.bill.giro_number">
+            </md-input-container>
+          </form>
+          <div class="demo-controls">
+            <md-button class="md-raised md-primary"
+                    ng-disabled="bill_form.supplier_name.$error.required ||
+                                 bill_form.tax_invoice_number.$error.required ||
+                                 bill_form.supplier_npwp.$error.required ||
+                                 bill_form.ddp.$error.required ||
+                                 bill_form.invoice_date.$error.required"
+                    ng-click="ctrl.create_bill()">
+                    Cetak Tanda Terima
+            </md-button>
+            <md-input-container>
+              <label>Pilih Metode</label>
+              <md-select ng-model="ctrl.print_method" ng-change="ctrl.change_print_method()">
+                <md-option ng-repeat="method in ctrl.print_methods"
+                           value="{{method.value}}">
+                  {{method.display}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+          </div>
+        </div>
+      </div>
+      <div class="letter-body print-section">
+        <!-- <h1>PT HALIMMA MANDIRI</h1> -->
+        <!-- <img src="assets/img/grim-logo.jpeg" alt="" /> -->
+        <p>telah diterima tagihan dari:</p>
+        <p class="letter-information">PT : <em>{{ctrl.bill_print.supplier_name}}</em></p>
+        <p class="letter-information">Jumlah : <em>{{ctrl.print_total | currency : 'Rp. ' : 0}}</em></p>
+        <p class="letter-information">Tanggal : <em>{{ctrl.bill_print.invoice_date | date: 'dd-MM-yyyy'}}</em></p>
+        <p class="letter-information">No Seri Faktur Pajak : <em>{{ctrl.bill_print.tax_invoice_number}}</em></p>
+        <p ng-if="ctrl.bill_print.is_service">
+          pungutan pph 23 atas jasa <em>{{ctrl.bill_print.pph23 | currency : 'Rp. ' : 0}}</em>
+        </p>
+        <p class="letter-information">Jumlah Akhir: <em>{{ctrl.bill_print.dpp_ppn_stamp_pph23 | currency : 'Rp. ' : 0}}</em></p>
+        <div class="letter-date">
+          <p>
+            Jakarta, {{ctrl.print_today | date : 'dd/MM/yyyy'}}
+          </p>
+          </br>
+          </br>
+          <p>
+            ttd.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo non-print">
+      <div class="demo-wrapper">
+        <button id="home-help-demo-toggle" class="js-container-target demo-toggle-button">
+          <div class="demo-meta u-avoid-clicks">Bantuan</div>
+        </button>
+        <div class="demo-box">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod. Click the demo button, change the new window and see the dimensions and position update here, above.</p>
+
+          <p>There are a lot of methods for controlling the state of the window such as the size, location, and focus status as well as events to listen to for window changes. Visit the <a href="http://electron.atom.io/docs/api/browser-window">documentation<span class="u-visible-to-screen-reader">(opens in new window)</span></a> for the full list.</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      require('./renderer-process/home/home.ctrl')
+      require('./renderer-process/directives/invoice-number/invoice-number.directive')
+      require('./renderer-process/directives/npwp-number/npwp-number.directive')
+    </script>
+
+  </section>
+
+</template>

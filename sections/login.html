@@ -1,0 +1,91 @@
+<template class="task-template">
+  <section id="login-section" class="section js-section u-category-lists">
+    <header class="section-header">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+          Halaman User
+        </h1>
+        <h3 id="login-warning" class="login-warning">Anda Butuh Login Terlebih Dahulu</h3>
+      </div>
+    </header>
+
+    <div class="demo" ng-controller="LoginCtrl as ctrl">
+      <div class="demo-wrapper">
+        <md-content>
+          <md-input-container ng-if="!ctrl.is_login" flex="50">
+            <label>Username:</label>
+            <input required ng-model="ctrl.user.username" code="13" dl-key-code="ctrl.login()">
+          </md-input-container>
+          <md-input-container ng-if="!ctrl.is_login" flex="50">
+            <label>Password:</label>
+            <input required ng-model="ctrl.user.password" type="password" code="13" dl-key-code="ctrl.login()">
+          </md-input-container>
+          <h3 ng-if="ctrl.is_login">User Aktif: {{ctrl.current_user.username}}</h3>
+          <md-button ng-if="ctrl.is_login" ng-click="ctrl.logout()">Logout</md-button>
+          <md-button ng-if="!ctrl.is_login" ng-click="ctrl.login()">Login</md-button>
+        </md-content>
+        <md-content ng-if="ctrl.is_login">
+          <h3>Change Password:</h3>
+          <md-input-container flex="50">
+            <label>Old Password:</label>
+            <input required ng-model="ctrl.change_password_data.old_password" type="password">
+          </md-input-container>
+          <md-input-container flex="50">
+            <label>New Password:</label>
+            <input required ng-model="ctrl.change_password_data.new_password" type="password">
+          </md-input-container>
+          <md-button ng-click="ctrl.change_password()" class="md-button-overwrite">Ubah</md-button>
+        </md-content>
+        <md-content ng-if="ctrl.is_login && ctrl.current_user.role===1">
+          <h3>Add Employee:</h3>
+          <md-input-container flex="50">
+            <label>Username:</label>
+            <input required ng-model="ctrl.add_employee.username" type="username">
+          </md-input-container>
+          <md-input-container flex="50">
+            <label>Password:</label>
+            <input required ng-model="ctrl.add_employee.password" type="password">
+          </md-input-container>
+          <md-button ng-click="ctrl.create_employee()" class="md-button-overwrite">Buat Account</md-button>
+
+          <md-table-container>
+            <table md-table>
+              <thead md-head>
+                <tr md-row>
+                  <th md-column>No</th>
+                  <th md-column>Username</th>
+                  <th md-column>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr md-row ng-if="ctrl.employees.length === 0">
+                  <td md-cell class="no-data" colspan="3">
+                    No data to display
+                  </td>
+                </tr>
+                <tr md-row dir-paginate="data in ctrl.employees | itemsPerPage: 10"
+                    total-items="ctrl.pagination.total"
+                    pagination-id="employee"
+                    current-page="ctrl.pagination.page">
+                  <td md-cell class="one-line">{{((ctrl.pagination.page - 1)*10) + ($index+1)}}</td>
+                  <td md-cell class="one-line">{{data.username}}</td>
+                  <td md-cell class="one-line">
+                    <md-button ng-click="ctrl.delete_employee(data)" class="md-button-overwrite">Hapus</md-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </md-table-container>
+          <dir-pagination-controls pagination-id="employee" on-page-change="ctrl.page_change(newPageNumber)"></dir-pagination-controls>
+
+        </md-content>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      require('./renderer-process/login/login.ctrl')
+    </script>
+
+  </section>
+</template>

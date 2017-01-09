@@ -1,0 +1,26 @@
+<md-dialog aria-label="Edit Giro" ng-cloak>
+  <form name="edit_giro_form">
+    <md-dialog-content class="edit-giro">
+      <div>
+        <md-input-container class="string-input-overwrite">
+          <label>No. Giro</label>
+          <input ng-model="egdc.bill.giro_number">
+        </md-input-container>
+        <md-datepicker flex="50"
+            ng-model="egdc.bill.giro_due_date"
+            md-placeholder="Jatuh Tempo">
+        </md-datepicker>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button type="submit"
+        ng-click="egdc.save()">
+        Simpan
+      </md-button>
+      <md-button type="submit"
+        ng-click="egdc.cancel()">
+        Batal
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

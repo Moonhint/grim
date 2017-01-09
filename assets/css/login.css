@@ -1,0 +1,8 @@
+/* Login ------------------------ */
+
+.login-warning {
+  visibility: hidden;
+}
+.login-warning.is-shown {
+  visibility: visible;
+}

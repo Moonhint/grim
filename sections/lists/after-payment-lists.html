@@ -1,0 +1,209 @@
+<template class="task-template">
+  <section id="after-payment-lists-section" class="section js-section u-category-lists">
+    <header class="section-header">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+          Lists Tagihan
+        </h1>
+      </div>
+    </header>
+
+    <div class="demo" ng-controller="AfterPaymentListCtrl as ctrl">
+      <div class="demo-wrapper">
+        <button id="after-payment-lists-demo-toggle" class="js-container-target demo-toggle-button">
+          <div class="demo-meta u-avoid-clicks">Tagihan yang sudah dibayar</div>
+        </button>
+        <div class="demo-box-for-table">
+          <md-toolbar class="md-table-toolbar md-default">
+            <div layout="column">
+              <div class="md-toolbar-tools md-toolbar-tools-overwrite">
+                <md-input-container>
+                  <label>Filter By</label>
+                  <md-select md-select-overwrite ng-model="ctrl.filter_by" ng-change="ctrl.change_filter()">
+                    <md-option ng-repeat="filter in ctrl.filters"
+                               value="{{filter.value}}">
+                      {{filter.display}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+                <md-input-container ng-if="ctrl.by_date_filter">
+                  <label>Pilih Bulan Filter</label>
+                  <md-select ng-model="ctrl.filter_by_month">
+                    <md-option ng-repeat="month in ctrl.month_filters" value="{{month.value}}" ng-click="ctrl.find_by(month.value)">
+                      {{month.display}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+                <md-datepicker class="md-datepicker-overwrite" ng-if="ctrl.by_date_filter" ng-model="ctrl.spesific_start_date" md-placeholder="Tanggal Mulai" ng-change="ctrl.find_by_spesific_date()"></md-datepicker>
+                <md-datepicker class="md-datepicker-overwrite" ng-if="ctrl.by_date_filter" ng-model="ctrl.spesific_end_date" md-placeholder="Tanggal Akhir" ng-change="ctrl.find_by_spesific_date()"></md-datepicker>
+                <md-input-container class="string-input-overwrite" ng-if="ctrl.by_string_filter">
+                  <label>String Filter</label>
+                  <input ng-model="ctrl.string_filter" code="13" dl-key-code="ctrl.find_by_string()">
+                </md-input-container>
+                <md-input-container ng-if="ctrl.by_number_filter">
+                  <label>Pilih Tanda Filter</label>
+                  <md-select ng-model="ctrl.filter_by_sign" ng-change="ctrl.find_by_number()">
+                    <md-option ng-repeat="sign in ctrl.sign_filters" value="{{sign.value}}">
+                      {{sign.display}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+                <md-input-container class="string-input-overwrite" ng-if="ctrl.by_number_filter">
+                  <label>Number Filter</label>
+                  <input ng-model="ctrl.number_filter" type="number" code="13" dl-key-code="ctrl.find_by_number()">
+                </md-input-container>
+                <ng-md-icon icon="setting" style="fill: grey" size="24px" ng-click="ctrl.toggle_expansion_field()"></ng-md-icon>
+              </div>
+              <div class="mass-assign">
+                <md-button
+                    ng-if="ctrl.mass_decompensation_ids.length!==0 && ctrl.current_user.role===1"
+                    ng-click="ctrl.mass_decompensation()" class="md-button-overwrite">
+                    Kembalikan {{ctrl.mass_decompensation_ids.length}} Tagihan
+                </md-button>
+              </div>
+            </div>
+          </md-toolbar>
+
+          <md-table-container>
+            <table md-table>
+              <thead md-head>
+                <tr md-row>
+                  <th md-column></th>
+                  <th md-column ng-if="ctrl.field_map['Tanggal Tanda Terima']" ng-click="ctrl.sort_by('created_at')">
+                    No
+                    <ng-md-icon ng-if="ctrl.current_sort==='created_at'" icon="{{ctrl.sort_tracker.created_at === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column ng-if="ctrl.field_map['Kompensasi']" ng-click="ctrl.sort_by('compensation_date')">
+                    Kompensasi
+                    <ng-md-icon ng-if="ctrl.current_sort==='compensation_date'" icon="{{ctrl.sort_tracker.compensation_date === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column ng-if="ctrl.field_map['Tanggal Invoice']" ng-click="ctrl.sort_by('invoice_date')">
+                    Tanggal
+                    <ng-md-icon ng-if="ctrl.current_sort==='invoice_date'" icon="{{ctrl.sort_tracker.invoice_date === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column ng-if="ctrl.field_map['Nama Supplier']" ng-click="ctrl.sort_by('supplier_name')">
+                    Nama Supplier
+                    <ng-md-icon ng-if="ctrl.current_sort==='supplier_name'" icon="{{ctrl.sort_tracker.supplier_name === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column md-numeric ng-if="ctrl.field_map['No Seri']" ng-click="ctrl.sort_by('tax_invoice_number')">
+                    No Seri
+                    <ng-md-icon ng-if="ctrl.current_sort==='tax_invoice_number'" icon="{{ctrl.sort_tracker.tax_invoice_number === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column md-numeric ng-if="ctrl.field_map['DPP']" ng-click="ctrl.sort_by('dpp')">
+                    DPP
+                    <ng-md-icon ng-if="ctrl.current_sort==='dpp'" icon="{{ctrl.sort_tracker.dpp === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column md-numeric ng-if="ctrl.field_map['PPN']" ng-click="ctrl.sort_by('ppn')">
+                    PPN
+                    <ng-md-icon ng-if="ctrl.current_sort==='ppn'" icon="{{ctrl.sort_tracker.ppn === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column md-numeric ng-if="ctrl.field_map['NPWP Supplier']" ng-click="ctrl.sort_by('supplier_npwp')">
+                    NPWP
+                    <ng-md-icon ng-if="ctrl.current_sort==='supplier_npwp'" icon="{{ctrl.sort_tracker.supplier_npwp === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column md-numeric ng-if="ctrl.field_map['Materai']" ng-click="ctrl.sort_by('stamp')">
+                    Materai
+                    <ng-md-icon ng-if="ctrl.current_sort==='stamp'" icon="{{ctrl.sort_tracker.stamp === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  <th md-column md-numeric ng-if="ctrl.field_map['PPH23']" ng-click="ctrl.sort_by('pph23')">
+                    PPH-23
+                    <ng-md-icon ng-if="ctrl.current_sort==='pph23'" icon="{{ctrl.sort_tracker.pph23 === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column md-numeric ng-if="ctrl.field_map['No Giro']" ng-click="ctrl.sort_by('giro_number')">
+                    No Giro
+                    <ng-md-icon ng-if="ctrl.current_sort==='giro_number'" icon="{{ctrl.sort_tracker.giro_number === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column ng-if="ctrl.field_map['Jatuh Tempo Giro']" ng-click="ctrl.sort_by('giro_due_date')">
+                    Jatuh Tempo
+                    <ng-md-icon ng-if="ctrl.current_sort==='giro_due_date'" icon="{{ctrl.sort_tracker.giro_due_date === 1 ? 'arrow_drop_down' : 'arrow_drop_up'}}"
+                                style="fill: grey" size="24px"></ng-md-icon>
+                  </th>
+                  <th md-column>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr md-row ng-if="ctrl.bills.length === 0">
+                  <td md-cell class="no-data" colspan="14">
+                    No data to display
+                  </td>
+                </tr>
+                <tr md-row dir-paginate="data in ctrl.bills | itemsPerPage: 10"
+                    total-items="ctrl.pagination.total"
+                    pagination-id="after"
+                    current-page="ctrl.pagination.page">
+                  <td md-cell>
+                    <md-checkbox md-no-ink class="md-checkbox-overwrite" aria-label="mass decompensation"
+                      ng-checked="ctrl.is_on_mass_selection(data)"
+                      ng-click="ctrl.mass_decompensation_select(data)">
+                    </md-checkbox>
+                  </td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['Tanggal Tanda Terima']">{{((ctrl.pagination.page - 1)*10) + ($index + 1)}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['Kompensasi']">{{data.compensation_date | date : 'MMM yyyy'}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['Tanggal Invoice']">{{data.invoice_date | date : 'd MMM yyyy'}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['Nama Supplier']">{{data.supplier_name}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['No Seri']">{{data.tax_invoice_number}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['DPP']">{{data.dpp | currency : 'Rp. ' : 0}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['PPN']">{{data.ppn | currency : 'Rp. ' : 0}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['NPWP Supplier']">{{data.supplier_npwp}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['Materai']">{{data.stamp | currency : 'Rp. ' : 0}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['PPH23']">{{data.pph23 | currency : 'Rp. ' : 0}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['No Giro']">{{data.giro_number}}</td>
+                  <td md-cell class="one-line" ng-if="ctrl.field_map['Jatuh Tempo Giro']">{{data.giro_due_date | date : 'd MMM yyyy'}}</td>
+                  <td md-cell class="one-line">
+                    <md-button ng-if="ctrl.current_user.role===1" ng-click="ctrl.delete_bill(data)" class="md-button-overwrite">Hapus</md-button>
+                    <md-button ng-if="ctrl.current_user.role===1" ng-click="ctrl.decompensation(data)" class="md-button-overwrite">Kembalikan</md-button>
+                    <md-button ng-click="ctrl.edit_giro(data)" class="md-button-overwrite">Edit Giro</md-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </md-table-container>
+          <dir-pagination-controls pagination-id="after" on-page-change="ctrl.page_change(newPageNumber)"></dir-pagination-controls>
+        </div>
+      </div>
+      <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="righta" md-disable-backdrop>
+        <md-content layout-padding>
+          <div layout="column">
+            <md-checkbox ng-repeat="(field, value) in ctrl.field_map" ng-checked="value" ng-click="ctrl.change_field_extension(field)">
+              {{field}}
+            </md-checkbox>
+          </div>
+          <md-button ng-click="ctrl.extension_field_close()" class="md-primary">
+            Close
+          </md-button>
+        </md-content>
+      </md-sidenav>
+    </div>
+
+    <div class="demo">
+      <div class="demo-wrapper">
+        <button id="after-payment-lists-help-demo-toggle" class="js-container-target demo-toggle-button">
+          <div class="demo-meta u-avoid-clicks">Bantuan</div>
+        </button>
+        <div class="demo-box">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod. Click the demo button, change the new window and see the dimensions and position update here, above.</p>
+
+          <p>There are a lot of methods for controlling the state of the window such as the size, location, and focus status as well as events to listen to for window changes. Visit the <a href="http://electron.atom.io/docs/api/browser-window">documentation<span class="u-visible-to-screen-reader">(opens in new window)</span></a> for the full list.</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+    require('./renderer-process/lists/after-payment-list.ctrl')
+    require('./renderer-process/directives/key-press/key-press.directive');
+    require('./renderer-process/lists/actions/edit-giro-dialog/dialog.controller');
+    </script>
+
+  </section>
+</template>

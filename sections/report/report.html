@@ -1,0 +1,307 @@
+<template class="task-template">
+  <section id="report-section" class="section js-section u-category-report">
+    <header class="section-header non-print">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+          Report pembayaran tagihan
+        </h1>
+      </div>
+    </header>
+    <header class="section-header print-section">
+      <!-- <img class="report-img" src="assets/img/grim-logo.jpeg" alt="" /> -->
+      <div class="letter-head section-wrapper">
+        <h4>
+          Report Pembayaran Tagihan
+        </h4>
+      </div>
+    </header>
+
+    <div class="demo" ng-controller="ReportCtrl as ctrl">
+      <div class="demo-wrapper non-print">
+        <button id="report-demo-toggle" class="js-container-target demo-toggle-button">
+          <div class="demo-meta u-avoid-clicks">Report</div>
+        </button>
+        <div class="demo-box">
+          <p>Tagihan yg sudah dan belum dibayar berdasarkan ada atau tidaknya no giro</p>
+          <div layout="row" layout-align="center center">
+            <div flex="50">
+              <fieldset class="demo-fieldset" >
+                <legend class="demo-legend">Pilih Bagian</legend>
+                <div layout="row" layout-wrap flex>
+                <div flex-xs flex="50">
+                  <md-checkbox aria-label="Select All"
+                               md-indeterminate="ctrl.is_indeterminate()"
+                               ng-click="ctrl.toggle_all()">
+                    Pilih Semua
+                  </md-checkbox>
+                </div>
+                  <div class="demo-select-all-checkboxes" flex="100">
+                    <md-checkbox ng-checked="ctrl.parts.part_one" ng-disabled="ctrl.disable_by_type" ng-click="ctrl.toggle('part_one')">
+                      Tagihan Dengan Giro Belum Terkompensasi
+                    </md-checkbox>
+                    <md-checkbox ng-checked="ctrl.parts.part_two" ng-disabled="ctrl.disable_by_type" ng-click="ctrl.toggle('part_two')">
+                      Tagihan Tanpa Giro Belum Terkompensasi
+                    </md-checkbox>
+                    <md-checkbox ng-checked="ctrl.parts.part_three" ng-click="ctrl.toggle('part_three')">
+                      Tagihan Tanpa Giro Terkompensasi
+                    </md-checkbox>
+                    <md-checkbox ng-checked="ctrl.parts.part_four" ng-click="ctrl.toggle('part_four')">
+                      Tagihan Dengan Giro Terkompensasi
+                    </md-checkbox>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div flex="50">
+              <div class="">
+                <md-input-container>
+                  <label>Filter Berdasarkan</label>
+                  <md-select ng-model="ctrl.filter_by_type">
+                    <md-option ng-repeat="type in ctrl.type_filters" value="{{type.value}}" ng-click="ctrl.select_type(type.value)">
+                      {{type.display}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+              </div>
+              <div class="">
+                <md-input-container>
+                  <label>Pilih Bulan</label>
+                  <md-select ng-model="ctrl.filter_by_month">
+                    <md-option ng-repeat="month in ctrl.month_filters" value="{{month.value}}">
+                      {{month.display}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+                <md-input-container style="width:90px">
+                  <label>Pilih Tahun</label>
+                  <md-select ng-model="ctrl.filter_by_year">
+                    <md-option ng-repeat="year in ctrl.year_filters" value="{{year.value}}">
+                      {{year.display}}
+                    </md-option>
+                  </md-select>
+                </md-input-container>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <md-input-container>
+              <label>Pilih Metode</label>
+              <md-select ng-model="ctrl.print_method" ng-change="ctrl.change_print_method()">
+                <md-option ng-repeat="method in ctrl.print_methods"
+                           value="{{method.value}}">
+                  {{method.display}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+            <md-button class="md-raised md-primary" ng-click="ctrl.print_report()">
+              Cetak Report
+            </md-button>
+          </div>
+        </div>
+      </div>
+      <div class="report-body print-section">
+        <div class="">
+          Tertanggal: {{ctrl.start_date}} hingga {{ctrl.end_date}}
+          <br>
+          <br>
+          <br>
+        </div>
+        <div class="report-little-body" ng-if="ctrl.parts.part_one">
+          <p>
+            Tagihan Dengan Giro Belum Terkompensasi: {{ctrl.bills.with_giro_no_compensated_bills.length}}
+          </p>
+          <md-table-container>
+            <table md-table>
+              <thead md-head>
+                <tr md-row>
+                  <th md-column>No</th>
+                  <th md-column>Tanggal</th>
+                  <th md-column>Nama Supplier</th>
+                  <th md-column md-numeric>No Seri</th>
+                  <th md-column md-numeric>DPP</th>
+                  <th md-column md-numeric>No Giro</th>
+                  <th md-column>Jatuh Tempo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr md-row ng-if="ctrl.bills.with_giro_no_compensated_bills.length === 0">
+                  <td md-cell class="no-data" colspan="7">
+                    No data to display
+                  </td>
+                </tr>
+                <tr md-row ng-repeat="data in ctrl.bills.with_giro_no_compensated_bills">
+                  <td md-cell class="one-line">{{$index + 1}}</td>
+                  <td md-cell class="one-line">{{data.invoice_date | date : 'd MMM yyyy'}}</td>
+                  <td md-cell class="one-line">{{data.supplier_name}}</td>
+                  <td md-cell class="one-line">{{data.tax_invoice_number}}</td>
+                  <td md-cell class="one-line">{{data.dpp | currency : 'Rp. ' : 0}}</td>
+                  <td md-cell class="one-line">{{data.giro_number}}</td>
+                  <td md-cell class="one-line">{{data.giro_due_date | date : 'd MMM yyyy'}}</td>
+                </tr>
+                <tr>
+                  <td>Total </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td md-cell class="one-line">{{ctrl.bills.total_dpp_with_giro_no_compensated | currency : 'Rp. ' : 0}}</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </md-table-container>
+        </div>
+        <div class="report-little-body" ng-if="ctrl.parts.part_two">
+          <p>
+            Tagihan Tanpa Giro Belum Terkompensasi: {{ctrl.bills.no_giro_no_compensated_bills.length}}
+          </p>
+          <md-table-container>
+            <table md-table>
+              <thead md-head>
+                <tr md-row>
+                  <th md-column>No</th>
+                  <th md-column>Tanggal</th>
+                  <th md-column>Nama Supplier</th>
+                  <th md-column md-numeric>No Seri</th>
+                  <th md-column md-numeric>DPP</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr md-row ng-if="ctrl.bills.no_giro_no_compensated_bills.length === 0">
+                  <td md-cell class="no-data" colspan="5">
+                    No data to display
+                  </td>
+                </tr>
+                <tr md-row ng-repeat="data in ctrl.bills.no_giro_no_compensated_bills">
+                  <td md-cell class="one-line">{{$index + 1}}</td>
+                  <td md-cell class="one-line">{{data.invoice_date | date : 'd MMM yyyy'}}</td>
+                  <td md-cell class="one-line">{{data.supplier_name}}</td>
+                  <td md-cell class="one-line">{{data.tax_invoice_number}}</td>
+                  <td md-cell class="one-line">{{data.dpp | currency : 'Rp. ' : 0}}</td>
+                </tr>
+                <tr>
+                  <td>Total </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td md-cell class="one-line">{{ctrl.bills.total_dpp_no_giro_no_compensated | currency : 'Rp. ' : 0}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </md-table-container>
+        </div>
+        <div class="report-little-body" ng-if="ctrl.parts.part_three">
+          <p>
+            Tagihan Tanpa Giro Terkompensasi: {{ctrl.bills.no_giro_compensated_bills.length}}
+          </p>
+          <md-table-container>
+            <table md-table>
+              <thead md-head>
+                <tr md-row>
+                  <th md-column>No</th>
+                  <th md-column>Tanggal</th>
+                  <th md-column>Kompensasi</th>
+                  <th md-column>Nama Supplier</th>
+                  <th md-column md-numeric>No Seri</th>
+                  <th md-column md-numeric>DPP</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr md-row ng-if="ctrl.bills.no_giro_compensated_bills.length === 0">
+                  <td md-cell class="no-data" colspan="6">
+                    No data to display
+                  </td>
+                </tr>
+                <tr md-row ng-repeat="data in ctrl.bills.no_giro_compensated_bills">
+                  <td md-cell class="one-line">{{$index + 1}}</td>
+                  <td md-cell class="one-line">{{data.invoice_date | date : 'd MMM yyyy'}}</td>
+                  <td md-cell class="one-line">{{data.compensation_date | date : 'MMM yyyy'}}</td>
+                  <td md-cell class="one-line">{{data.supplier_name}}</td>
+                  <td md-cell class="one-line">{{data.tax_invoice_number}}</td>
+                  <td md-cell class="one-line">{{data.dpp | currency : 'Rp. ' : 0}}</td>
+                </tr>
+                <tr>
+                  <td>Total </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td md-cell class="one-line">{{ctrl.bills.total_dpp_no_giro_compensated | currency : 'Rp. ' : 0}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </md-table-container>
+        </div>
+        <div class="report-little-body" ng-if="ctrl.parts.part_four">
+          <p>
+            Tagihan Dengan Giro Terkompensasi: {{ctrl.bills.with_giro_compensated_bills.length}}
+          </p>
+          <md-table-container>
+            <table md-table>
+              <thead md-head>
+                <tr md-row>
+                  <th md-column>No</th>
+                  <th md-column>Tanggal</th>
+                  <th md-column>Kompensasi</th>
+                  <th md-column>Nama Supplier</th>
+                  <th md-column md-numeric>No Seri</th>
+                  <th md-column md-numeric>DPP</th>
+                  <th md-column md-numeric>No Giro</th>
+                  <th md-column>Jatuh Tempo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr md-row ng-if="ctrl.bills.with_giro_compensated_bills.length === 0">
+                  <td md-cell class="no-data" colspan="8">
+                    No data to display
+                  </td>
+                </tr>
+                <tr md-row ng-repeat="data in ctrl.bills.with_giro_compensated_bills">
+                  <td md-cell class="one-line">{{$index + 1}}</td>
+                  <td md-cell class="one-line">{{data.invoice_date | date : 'd MMM yyyy'}}</td>
+                  <td md-cell class="one-line">{{data.compensation_date | date : 'MMM yyyy'}}</td>
+                  <td md-cell class="one-line">{{data.supplier_name}}</td>
+                  <td md-cell class="one-line">{{data.tax_invoice_number}}</td>
+                  <td md-cell class="one-line">{{data.dpp | currency : 'Rp. ' : 0}}</td>
+                  <td md-cell class="one-line">{{data.giro_number}}</td>
+                  <td md-cell class="one-line">{{data.giro_due_date | date : 'd MMM yyyy'}}</td>
+                </tr>
+                <tr>
+                  <td>Total </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td md-cell class="one-line">{{ctrl.bills.total_dpp_with_giro_compensated | currency : 'Rp. ' : 0}}</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </md-table-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo non-print">
+      <div class="demo-wrapper">
+        <button id="report-help-demo-toggle" class="js-container-target demo-toggle-button">
+          <div class="demo-meta u-avoid-clicks">Bantuan</div>
+        </button>
+        <div class="demo-box">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod. Click the demo button, change the new window and see the dimensions and position update here, above.</p>
+
+          <p>There are a lot of methods for controlling the state of the window such as the size, location, and focus status as well as events to listen to for window changes. Visit the <a href="http://electron.atom.io/docs/api/browser-window">documentation<span class="u-visible-to-screen-reader">(opens in new window)</span></a> for the full list.</p>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      require('./renderer-process/report/report.ctrl')
+      // require('./renderer-process/windows/manage-window')
+      // require('./renderer-process/windows/frameless-window')
+    </script>
+
+  </section>
+</template>

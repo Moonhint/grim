@@ -1,0 +1,97 @@
+@media print {
+
+  /*html {
+    overflow: visible;
+    overflow-y: visible;
+  }
+
+  body {
+    float: none;
+    overflow: visible;
+    overflow-y: visible;
+
+    margin: 0; padding: 0;
+  }
+
+
+  .demo {
+    float: none;
+    overflow: visible;
+    overflow-y: visible;
+
+  }*/
+  .section {
+    overflow: visible !important;
+  }
+
+  /*
+  h1 {
+    font-size: 22px;
+  }
+
+  .nav, button, .demo-box:before,
+  #pdf-path, header p {
+    display: none;
+  }*/
+
+  nav {
+    display: none !important;
+  }
+
+  .non-print {
+    display: none !important;
+  }
+
+  .print-section {
+    display: block !important;
+  }
+
+  .section-wrapper {
+    max-width: 400px;
+  }
+
+  .letter-head h4 {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .letter-body {
+    margin: 3em 6em 3em 6em;
+  }
+
+  .letter-body h1 {
+    font-size: 16px;
+    padding-left: 1em;
+    padding-bottom: 1em;
+  }
+
+  .letter-information {
+    padding-left: 2em;
+  }
+
+  .letter-date {
+    padding-top: 13px;
+    padding-right: 20px;
+    float: right;
+    text-align: center;
+  }
+
+  .ui-notification {
+    display: none !important;
+  }
+
+  .report-body {
+    /*display: grid;*/
+    /*position:absolute;
+    display: block;
+    float: none;
+    overflow: visible;
+    overflow-y: visible;*/
+    margin: 3em 2em 3em 2em;
+  }
+
+  .report-little-body{
+    padding-bottom: 80px;
+  }
+
+}
